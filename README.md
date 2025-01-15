@@ -78,6 +78,11 @@ See the LICENSE file Apache 2 [https://www.apache.org/licenses/LICENSE-2.0](http
 ## Ready to use
 In the [Release of the project](https://github.com/vdaburon/jmeter-otel-apm/releases)  you will find the tool compiled in one (uber) jar file which is directly usable.
 
+## Also a JMeter plugin
+This tool have a Swing GUI Interface in JMeter.<br/>
+The JMeter plugin is call "vdn@github - OTEL ELASTIC APM Integration Tool" <br/>
+Link to this project plugin : https://github.com/vdaburon/otel-apm-jmeter-plugin
+
 ## Help
 <pre>
 [main] INFO io.github.vdaburon.jmeter.otelxml.OtelJMeterManager - main begin
