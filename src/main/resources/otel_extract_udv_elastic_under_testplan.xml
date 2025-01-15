@@ -1,0 +1,50 @@
+</TestPlan>
+<hashTree>
+  <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="udv OTEL_ACTIVE" enabled="true">
+    <collectionProp name="Arguments.arguments">
+      <elementProp name="OTEL_ACTIVE" elementType="Argument">
+        <stringProp name="Argument.name">OTEL_ACTIVE</stringProp>
+        <stringProp name="Argument.value">${__P(param_otel_active,TRUE)}</stringProp>
+        <stringProp name="Argument.metadata">=</stringProp>
+      </elementProp>
+    </collectionProp>
+    <stringProp name="TestPlan.comments">@@OTEL_APM_UDV</stringProp>
+  </Arguments>
+  <hashTree/>
+  <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group for init OpenTelemetry" enabled="true">
+    <stringProp name="TestPlan.comments">@@OTEL_SETUP_INIT_TRACER</stringProp>
+    <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+    <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+      <boolProp name="LoopController.continue_forever">false</boolProp>
+      <stringProp name="LoopController.loops">1</stringProp>
+    </elementProp>
+    <stringProp name="ThreadGroup.num_threads">1</stringProp>
+    <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+    <boolProp name="ThreadGroup.scheduler">false</boolProp>
+    <stringProp name="ThreadGroup.duration"></stringProp>
+    <stringProp name="ThreadGroup.delay"></stringProp>
+    <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+  </SetupThreadGroup>
+  <hashTree>
+    <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="groovy init OpenTelemetry and Tracer save P_OTEL_TRACER" enabled="true">
+      <stringProp name="scriptLanguage">groovy</stringProp>
+      <stringProp name="parameters"></stringProp>
+      <stringProp name="filename"></stringProp>
+      <stringProp name="cacheKey">true</stringProp>
+      <stringProp name="script">import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Tracer;
+
+Tracer tracer = props.get(&quot;P_OTEL_TRACER&quot;);
+if (tracer == null) {
+  OpenTelemetry openTelemetry = GlobalOpenTelemetry.get();
+  tracer = openTelemetry.getTracer(&quot;vdn.jmeter.otel&quot;);
+  log.info(&quot;tracer P_OTEL_TRACER initialized&quot;);
+  props.put(&quot;P_OTEL_TRACER&quot;,tracer);
+} else {
+  log.info(&quot;The tracer P_OTEL_TRACER already exist&quot;);
+}
+      </stringProp>
+    </JSR223Sampler>
+    <hashTree/>
+  </hashTree>

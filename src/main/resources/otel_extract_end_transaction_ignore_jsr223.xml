@@ -1,0 +1,20 @@
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="groovy end transaction apm" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
+
+SampleResult.setIgnore(); // Ignore, we don't want this sampler in listener
+String sOTEL_ACTIVE = vars.get(&quot;OTEL_ACTIVE&quot;);
+if (sOTEL_ACTIVE == null || &quot;TRUE&quot;.equalsIgnoreCase(sOTEL_ACTIVE)) {
+    Span span = (Span) vars.getObject(&quot;V_OTEL_TRANSACTION_TC&quot;);
+    if (span != null) {
+        span.end();
+        vars.putObject(&quot;V_OTEL_TRANSACTION_TC&quot;, null);
+    }
+}
+            </stringProp>
+            <stringProp name="TestPlan.comments">@@OTEL_APM_END</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
