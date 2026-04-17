@@ -38,7 +38,7 @@ import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Tracer;
 Tracer tracer = props.get(&quot;P_OTEL_TRACER&quot;);
 if (tracer == null) {
   OpenTelemetry openTelemetry = GlobalOpenTelemetry.get();
-  tracer = openTelemetry.getTracer(&quot;vdn.jmeter.otel&quot;);
+  tracer = openTelemetry.getTracer(&quot;io.github.vdaburon.opentelemetry.instrumentation.jmeter&quot;);
   log.info(&quot;tracer P_OTEL_TRACER initialized&quot;);
   props.put(&quot;P_OTEL_TRACER&quot;,tracer);
 } else {

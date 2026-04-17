@@ -4,6 +4,7 @@
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="script">import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Span;
+import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.javaagent.shaded.io.opentelemetry.context.Scope;
 
@@ -14,7 +15,7 @@ if (sOTEL_ACTIVE == null || &quot;TRUE&quot;.equalsIgnoreCase(sOTEL_ACTIVE)) {
 	try {
 		Tracer tracer = props.get(&quot;P_OTEL_TRACER&quot;);
 		if (tracer != null) {
-			Span span = tracer.spanBuilder(transactionName).setNoParent().startSpan();
+			Span span = tracer.spanBuilder(transactionName).setSpanKind(SpanKind.CLIENT).setNoParent().startSpan();
 			Scope ignored = span.makeCurrent()
 			vars.putObject(&quot;V_OTEL_TRANSACTION_TC&quot;, span);
 		} else {

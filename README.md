@@ -6,6 +6,11 @@
 </p>
 
 # Apache JMeter with integration of OpenTelemetry (OTEL) from Elastic Application Performance Monitoring (APM)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.vdaburon/jmeter-otel-apm)](https://central.sonatype.com/artifact/io.github.vdaburon/jmeter-otel-apm)
+[![Apache License](http://img.shields.io/badge/license-Apache-green.svg)](https://github.com/vdaburon/CreateHtmlForFilesInDirectory/blob/main/LICENSE)
+![Free](https://img.shields.io/badge/free-open--source-green.svg)
+[![Apache JMeter](https://img.shields.io/badge/Apache%20JMeter-green)](https://jmeter.apache.org/)
+
 This tool manages the integration of OTEL from Elastic Application Performance Monitoring Agent in the Apache JMeter.
 
 The main goal is to show the timeline of pages declared in JMeter script in the Kibana APM. For each page on the JMeter side, have all the server-side calls grouped together, the SQL queries and the inter-application exchanges in the notion of page.
@@ -33,7 +38,7 @@ Add a User Defined Variables "OTEL_ACTIVE" and<br/>
 a setUp Thread Group for init OpenTelemetry contains (JSR2233 Sampler) groovy init OpenTelemetry  and Tracer save in property "P_OTEL_TRACER" (simplified code) :
 <pre>
 OpenTelemetry openTelemetry = GlobalOpenTelemetry.get();
-Tracer tracer = openTelemetry.getTracer("vdn.jmeter.otel");
+Tracer tracer = openTelemetry.getTracer("io.github.vdaburon.opentelemetry.instrumentation.jmeter");
 props.put("P_OTEL_TRACER",tracer);
 </pre>
 
@@ -42,7 +47,7 @@ Each JMeter Transaction Controller (page) is surround with a begin transaction a
 In the "groovy begin transaction apm", the groovy code calls the OTEL API (simplified code) :
 <pre>
 Tracer tracer = props.get("P_OTEL_TRACER");
-Span span = tracer.spanBuilder(transactionName).setNoParent().startSpan(); // transactionName is the name of the Transaction Controller
+Span span = tracer.spanBuilder(transactionName).setSpanKind(SpanKind.CLIENT).setNoParent().startSpan(); // transactionName is the name of the Transaction Controller
 Scope ignored = span.makeCurrent()
 vars.putObject("V_OTEL_TRANSACTION_TC", span);
 </pre>
@@ -186,14 +191,14 @@ Paths are relative to the home maven project
 </jMeterProcessJVMSettings>
 </pre>
 
-A pom.xml example, the otel_version is set to "1.1.0" for the OTEL ELASTIC APM Agent agent:
+A pom.xml example, the otel_version is set to "1.10.0" for the OTEL ELASTIC APM Agent agent:
 ```XML
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.vdaburon.jmeter</groupId>
     <artifactId>gestdoc-maven-launch-loadtest-otel-apm</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -202,7 +207,7 @@ A pom.xml example, the otel_version is set to "1.1.0" for the OTEL ELASTIC APM A
         <jvm_xmx>756</jvm_xmx>
 
         <!-- OTEL Elastic APM Java Agent -->
-        <otel_version>1.1.0</otel_version>
+        <otel_version>1.10.0</otel_version>
         <otel_service_name>YourServiceNane</otel_service_name>
         <otel_environment>deployment.environment=YourEnvironment</otel_environment>
         <otel_otlp_endpoint>http://apm_server:8200</otel_otlp_endpoint>
@@ -259,12 +264,12 @@ A pom.xml example, the otel_version is set to "1.1.0" for the OTEL ELASTIC APM A
 </project>
 ```
 ### Usage Maven
-The maven groupId, artifactId and version, this plugin is in the **Maven Central Repository** [![Maven Central jmeter-otel-apm](https://maven-badges.herokuapp.com/maven-central/io.github.vdaburon/jmeter-otel-apm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.vdaburon/jmeter-elastic-apm)
+The maven groupId, artifactId and version, this plugin is in the **Maven Central Repository** [![Maven Central](https://img.shields.io/maven-central/v/io.github.vdaburon/jmeter-otel-apm)](https://central.sonatype.com/artifact/io.github.vdaburon/jmeter-otel-apm)
 
 ```xml
 <groupId>io.github.vdaburon</groupId>
 <artifactId>jmeter-otel-apm</artifactId>
-<version>1.0</version>
+<version>1.2</version>
 ```
 
 ## Advanced usage
@@ -313,4 +318,8 @@ OtelJMeterManager.modifyAddSamplerForOtelApm(sFileIn, sFileOut, OtelJMeterManage
 </pre>
 
 ## Versions
+Version 1.2 2026-04-16, Update badge links, update Maven Plugins: commons-cli v1.11.0, maven-compiler-plugin v3.12.1, maven-assembly-plugin v3.8.0, maven-gpg-plugin v3.2.8, central-publishing-maven-plugin v0.10.0.
+
+Version 1.1 2025-09-15, Update elastic-otel-javaagent-1.5.0.jar (before 1.1.0), change tracer name to "io.github.vdaburon.opentelemetry.instrumentation.jmeter" (before vdn.otel.jmeter) to be more conforme to instrument libraries naming convention, declare setSpanKind(SpanKind.CLIENT) when create a span. Change the maven plugin and configuration to publish to maven central in pom.xml.
+
 Version 1.0 2025-01-15, First version of this tool.
